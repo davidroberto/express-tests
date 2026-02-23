@@ -4,7 +4,7 @@
 - installer les dépendances en local pour l'autocomplétion : "npm install" à la racine du projet
 - installer Postman et tester les services : 
 
-- App Node.js : localhost:3000 - health check retourne OK
+- App Node.js : localhost:3000/api/health - health check retourne OK
 - Adminer : localhost:8080 - accessible (HTTP 200)
 
 Pour te connecter à Adminer :
