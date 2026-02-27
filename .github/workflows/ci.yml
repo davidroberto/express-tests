@@ -1,0 +1,57 @@
+name: CI
+
+# Déclenché à chaque push sur la branche main
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # Job 1 : Vérifications de qualité du code et tests
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      # Récupère le code source du repository
+      - uses: actions/checkout@v4
+
+      # Installe Node.js 20 et met en cache les dépendances npm
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # Installe les dépendances de manière reproductible (depuis le lock file)
+      - run: npm ci
+
+      # Vérifie que le code respecte le formatage Prettier
+      - run: npm run format:check
+
+      # Compile le TypeScript en JavaScript
+      - run: npm run build
+
+      # Lance les tests unitaires (mocks, pas de DB)
+      - run: npm run test:unit
+
+      # Lance les tests e2e (testcontainers démarre un Postgres éphémère)
+      - run: npm run test:e2e
+
+      # Lance les tests d'intégration (testcontainers démarre un Postgres éphémère)
+      - run: npm run test:integration
+
+  # Job 2 : Build de l'image Docker de production
+  # Ne s'exécute que si le job "checks" a réussi
+  build-image:
+    runs-on: ubuntu-latest
+    needs: checks
+    env:
+      DB_USER: ci
+      DB_PW: ci
+      DB_NAME: ci
+      DB_PORT: 5432
+      DB_HOST: db
+      PORT: 3000
+    steps:
+      # Récupère le code source du repository
+      - uses: actions/checkout@v4
+
+      # Build l'image Docker de production (multi-stage : compile TS puis image légère)
+      - run: docker compose -f docker-compose.prod.yml build

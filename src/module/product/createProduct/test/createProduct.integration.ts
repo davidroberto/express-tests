@@ -10,9 +10,7 @@ describe('CreateProductTypeOrmRepository - Integration', () => {
     let dataSource: DataSource;
 
     beforeAll(async () => {
-        container = await new PostgreSqlContainer('postgres:16')
-            .withExposedPorts(5432)
-            .start();
+        container = await new PostgreSqlContainer('postgres:16').withExposedPorts(5432).start();
 
         dataSource = new DataSource({
             type: 'postgres',
@@ -24,7 +22,7 @@ describe('CreateProductTypeOrmRepository - Integration', () => {
             logging: false,
             entities: [Product],
             synchronize: true,
-            entitySkipConstructor: true,
+            entitySkipConstructor: true
         });
 
         await dataSource.initialize();
@@ -46,7 +44,7 @@ describe('CreateProductTypeOrmRepository - Integration', () => {
         const product = new Product({
             title: 'switch 2',
             description: 'nouvelle console',
-            price: 500,
+            price: 500
         });
 
         await repository.save(product);
@@ -66,13 +64,13 @@ describe('CreateProductTypeOrmRepository - Integration', () => {
         const product1 = new Product({
             title: 'switch 2',
             description: 'nouvelle console',
-            price: 500,
+            price: 500
         });
 
         const product2 = new Product({
             title: 'playstation 6',
             description: 'console next gen',
-            price: 700,
+            price: 700
         });
 
         await repository.save(product1);

@@ -1,4 +1,14 @@
+node_modules
 build
-coverage
-.env
-.env.local
+.git
+.github
+*.md
+.env*
+.prettierrc
+.prettierignore
+eslint.config.mts
+babel.config.js
+jest.config.js
+nodemon.json
+*.excalidraw
+express-ecommerce
